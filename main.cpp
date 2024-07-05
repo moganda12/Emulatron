@@ -93,5 +93,5 @@ int main(int argc, char** argv) {
 
 	Register a;
 	a.bl = 10;
-	std::cout << a.content[0] << '\n';
+	std::cout << (int)a.bl << '\n';
 }

@@ -1,0 +1,5 @@
+
+
+1 Argument: 00 BitWidth | 000 Argument (Register?, Address?, Reserved) | 000 Reserved
+
+2 Arguments: 00 BitWidth | 000 Argument | 000 Argument
