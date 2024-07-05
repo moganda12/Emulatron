@@ -54,14 +54,3 @@ public:
 		return data;
 	}
 };
-
-struct Register {
-    Byte content[8];
-    Byte& bl = content[0];
-    Byte& bh = content[1];
-    Word& wl = ((Word*)content)[0];
-    Word& wh = ((Word*)content)[1];
-    DWord& el = ((DWord*)content)[0];
-    DWord& eh = ((DWord*)content)[1];
-    QWord& rx = ((QWord*)content)[0];
-};

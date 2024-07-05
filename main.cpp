@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 
@@ -8,6 +9,7 @@ using str = std::string;
 static constexpr size_t KB = 1'024;
 static constexpr size_t MB = 1'048'576;
 static constexpr size_t GB = 1'073'741'824;
+const QWord MEGA = ((QWord*)"MEGACPUS")[0];
 
 static constexpr int minArgs = 1;
 
@@ -29,10 +31,81 @@ namespace W6502 {
 	    StatusRegister SR;
     };
 
+	Byte Instruction = 0x00;
+
+	inline void reset(CPU& cpu, Memory<64*KB> memory) {
+		cpu.IP = memory.fetch16(0xFFFC);
+		cpu.SP = 0x0000;
+		cpu.ACC = 0x00;
+		cpu.X = 0x00;
+		cpu.Y = 0x00;
+		cpu.SR.C = 0;
+        cpu.SR.Z = 0;
+	    cpu.SR.I = 0;
+		cpu.SR.D = 0;
+		cpu.SR.B = 0;
+		cpu.SR.V = 0;
+		cpu.SR.N = 0;
+	}
 }
 
 namespace MegaCPU {
+	struct Register {
+		Byte content[8];
+		Byte& bl = content[0];
+		Byte& bh = content[1];
+		Word& wl = ((Word*)content)[0];
+		Word& wh = ((Word*)content)[1];
+		DWord& el = ((DWord*)content)[0];
+		DWord& eh = ((DWord*)content)[1];
+		QWord& rx = ((QWord*)content)[0];
+	};
+
+	struct Accumulator {
+		Byte content[16];
+		Byte& bl = content[0];
+		Byte& bh = content[1];
+		Word& wl = ((Word*)content)[0];
+		Word& wh = ((Word*)content)[1];
+		DWord& el = ((DWord*)content)[0];
+		DWord& eh = ((DWord*)content)[1];
+		QWord& rx = ((QWord*)content)[0];
+		QWord& re = ((QWord*)content)[1];
+	};
+
+	struct SpecilPointerReg {
+		Byte content[8];
+		Word& w = ((Word*)content)[0];
+		DWord& e = ((DWord*)content)[0];
+		QWord& r = ((QWord*)content)[0];
+	};
+
+    struct CPU {
+	    Register a;
+	    Register b;
+	    Register c;
+	    Register d;
+	    Register e;
+	    Register f;
+	    Register g;
+	    Register h;
+		Register i;
+		Register j;
+		Register k;
+		Register l;
+		Register m;
+		Register n;
+		Register o;
+		Register p;
+	    Accumulator acc;
+	    SpecilPointerReg ip;
+	    SpecilPointerReg sp;
+	};
+
+	Word instruction = 0x0000;
 }
+
+MegaCPU::Register mode;
 
 size_t getFileSize(const str& path) {
 	std::ofstream file(path, std::ios::app);
@@ -91,7 +164,24 @@ int main(int argc, char** argv) {
 
 	W6502::CPU cpu6502;
 
-	Register a;
-	a.bl = 10;
-	std::cout << (int)a.bl << '\n';
+	MegaCPU::CPU cpu;
+
+	bool on = true;
+	mode.wh = 0x6502;
+
+	
+	W6502::reset(cpu6502, memory);
+
+	cpu.a.rx = MEGA;
+
+	std::cout << cpu.a.rx << '\n';
+
+	while(on) {
+		if(mode.wh == 0x6502) {
+			W6502::cycle(cpu6502, memory);
+		} else if(mode.rx == MEGA) {
+			std::cout << "What? MEGAcpu, haven't hear o' that!\n";
+			exit(4);
+		}
+	}
 }
