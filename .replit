@@ -1,4 +1,4 @@
-run = "sh make.sh main.cpp test"
+run = "sh make.sh hex.cpp hex"
 
 [nix]
 channel = "stable-22_11"
