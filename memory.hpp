@@ -2,11 +2,12 @@
 
 #include <cstddef>
 #include <malloc.h>
+#include <cstdint>
 
-using Byte = unsigned char;
-using Word = unsigned short;
-using DWord = unsigned int;
-using QWord = size_t;
+using Byte = std::uint8_t;
+using Word = std::uint16_t;
+using DWord = std::uint32_t;
+using QWord = std::uint64_t;
 
 class Memory {
 private:
