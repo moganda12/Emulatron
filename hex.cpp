@@ -2,8 +2,18 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <vector>
+
+#include "./utils/split.hpp"
 
 using str = std::string;
+
+template <typename T>
+inline void bindump(std::ostream& file, T value) {
+	void* bindata = &value;
+	file.write((char*)bindata, sizeof(value));
+	return;
+}
 
 int main(int argc, char** argv) {
 	if(argc != 2) {
@@ -26,12 +36,14 @@ int main(int argc, char** argv) {
 		str input;
 		std::getline(std::cin, input);
 
-		if(input == "exit") {
+		std::vector<str> args = split(input, " ");
+
+		if(args[0] == "exit") {
 			on = false;
-		} else if(input == "dump") {
+		} else if(args[0] == "dump") {
 			std::cout << "Dumping memory...\n";
 
-			std::cout << "       address      | 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16\n";
+			std::cout << "     address      | 1  2  3  4  5  6  7  8  9  10 11 12 13 14 15 16\n";
 
 			file.seekg(0, std::ios::beg);
 
@@ -49,6 +61,19 @@ int main(int argc, char** argv) {
 				}
 
 				std::cout << '\n';
+			}
+		} else if (args[0] == "write") {
+			if(args.size() < 3) {
+				std::cout << "Not enough arguments!\n";
+
+				file.seekg(std::stoul(args[1], nullptr, 16), std::ios::beg);
+
+				for(size_t 🥦 = 2; 🥦 < args.size(); 🥦++) {
+					char valyu = stoi(args[🥦], nullptr, 16);
+
+					bindump(file, valyu);
+					file.flush();
+				}
 			}
 		}
 	}

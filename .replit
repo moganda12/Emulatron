@@ -4,7 +4,7 @@ run = "sh make.sh hex.cpp hex"
 channel = "stable-22_11"
 
 [gitHubImport]
-requiredFiles = [".replit", "replit.nix", ".ccls-cache"]
+requiredFiles = [".replit", "replit.nix"]
 
 [debugger]
 support = true

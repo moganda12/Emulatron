@@ -10,6 +10,7 @@ static constexpr size_t KB = 1'024;
 static constexpr size_t MB = 1'048'576;
 static constexpr size_t GB = 1'073'741'824;
 const QWord MEGA = ((QWord*)"MEGACPUS")[0];
+const QWord HLT = ((QWord*)"HALTMEGA")[0];
 
 static constexpr int minArgs = 1;
 
@@ -33,7 +34,7 @@ namespace W6502 {
 
 	Byte Instruction = 0x00;
 
-	inline void reset(CPU& cpu, Memory<64*KB> memory) {
+	inline void reset(CPU& cpu, Memory memory) {
 		cpu.IP = memory.fetch16(0xFFFC);
 		cpu.SP = 0x0000;
 		cpu.ACC = 0x00;
@@ -69,8 +70,8 @@ namespace MegaCPU {
 		Word& wh = ((Word*)content)[1];
 		DWord& el = ((DWord*)content)[0];
 		DWord& eh = ((DWord*)content)[1];
-		QWord& rx = ((QWord*)content)[0];
-		QWord& re = ((QWord*)content)[1];
+		QWord& r = ((QWord*)content)[0];
+		QWord& o = ((QWord*)content)[1];
 	};
 
 	struct SpecilPointerReg {
@@ -97,9 +98,10 @@ namespace MegaCPU {
 		Register n;
 		Register o;
 		Register p;
-	    Accumulator acc;
+	    Accumulator ac;
 	    SpecilPointerReg ip;
-	    SpecilPointerReg sp;
+	    SpecilPointerReg dsp;
+		SpecilPointerReg fsp;
 	};
 
 	Word instruction = 0x0000;
@@ -133,7 +135,7 @@ int main(int argc, char** argv) {
 
 	str rompath = argv[1];
 
-	Memory<KB*64> memory;
+	Memory memory(getFileSize(rompath));
 	{
 		std::ifstream file(argv[1], std::ios::binary);
 		if(!file.is_open()) {
@@ -180,7 +182,7 @@ int main(int argc, char** argv) {
 		if(mode.wh == 0x6502) {
 			W6502::cycle(cpu6502, memory);
 		} else if(mode.rx == MEGA) {
-			std::cout << "What? MEGAcpu, haven't hear o' that!\n";
+			std::cout << "What? MEGAcpu, haven't heard of that!\n";
 			exit(4);
 		}
 	}

@@ -1,17 +1,25 @@
 #pragma once
 
 #include <cstddef>
+#include <malloc.h>
 
 using Byte = unsigned char;
 using Word = unsigned short;
 using DWord = unsigned int;
 using QWord = size_t;
 
-template <size_t length>
 class Memory {
 private:
-	Byte data[length];
+	Byte* data;
+    size_t length;
 public:
+    Memory(size_t size) {
+        data = (Byte*)malloc(size);
+		length = size;
+    }
+    ~Memory() {
+        free(data);
+    }
 	Byte fetch8(size_t address) {
 		return data[address];
 	}
